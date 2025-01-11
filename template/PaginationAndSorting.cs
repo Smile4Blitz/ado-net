@@ -1,0 +1,3 @@
+SELECT * FROM table
+ORDER BY column ASC
+OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
