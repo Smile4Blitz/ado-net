@@ -2,6 +2,7 @@
 using System.Text;
 using System.Configuration;
 using System;
+using System.Data;
 
 namespace Winkel
 {
@@ -61,8 +62,13 @@ namespace Winkel
             conn.ConnectionString = connectionString;
             return conn;
         }
-
-
-
+        protected static void AddParameter(DbCommand cmd, string parameterName, DbType dbType, Object? value)
+        {
+            DbParameter dbParameter = cmd.CreateParameter();
+            dbParameter.ParameterName = parameterName;
+            dbParameter.DbType = dbType;
+            dbParameter.Value = value ?? DBNull.Value;
+            cmd.Parameters.Add(dbParameter);
+        }
     }
 }

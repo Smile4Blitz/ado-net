@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using Microsoft.Identity.Client.Extensions.Msal;
 using Winkel;
 
 
@@ -6,16 +7,49 @@ using Winkel;
 DbProviderFactories.RegisterFactory("Microsoft.Data.SqlClient", Microsoft.Data.SqlClient.SqlClientFactory.Instance);
 
 
-DataStorageMetReader storage = new();
-WriteCustomers(storage);
+DataStorageMetReader storageReader = new DataStorageMetReader();
+DataStorageMetDataTable storageDataSet = new DataStorageMetDataTable();
+
+WriteCustomers(storageReader);
 
 //Klant toevoegen
-AddCustomer(storage);
+AddCustomer(storageReader);
 
-WriteCustomers(storage);
+WriteCustomers(storageReader);
 
 //Bestelling toevoegen;
-AddOrder(storage);
+AddOrder(storageReader);
+
+//DataSet Tests
+TestDataSet(storageDataSet);
+
+static void TestDataSet(DataStorageMetDataTable storageDataSet)
+{
+    Customer c = new()
+    {
+        AddressLine1 = "EEN !",
+        AddressLine2 = "TWEE !",
+        City = "city",
+        ContactFirstName = "voornaampje",
+        ContactLastName = "achternaam contactpersoon",
+        Country = "BE",
+        CreditLimit = 50.00,
+        CustomerName = "naam van klant",
+        CustomerNumber = 789789789,
+        Phone = "003212456",
+        PostalCode = "XM4545",
+        SalesRepEmployeeNumber = 10101010,
+        State = "West-Vlaanderen"
+    };
+
+    storageDataSet.AddCustomer(c);
+    List<Customer> customers = storageDataSet.GetCustomers();
+    Console.WriteLine($"DataSet customerId: {storageDataSet.GetCustomerById(c.CustomerNumber)}");
+    storageDataSet.DeleteCustomer(c);
+    storageDataSet.SyncDb();
+    Console.WriteLine($"Are customers lists the same: {customers.Count == storageDataSet.GetCustomers().Count}");
+    Console.WriteLine($"DataSet customerId: {storageDataSet.GetCustomerById(c.CustomerNumber)}");
+}
 
 static void WriteCustomers(DataStorageMetReader storage)
 {

@@ -9,7 +9,7 @@ using Winkel;
 
 namespace Winkel
 {
-    public class DataStorageMetReader : DataStorage
+    public class DataStorageMetReader : DataStorage, IDataStorageDAO
     {
         const string GET_ALL_CUSTOMERS_CONFIG_KEY = "SELECT_ALL_CUSTOMERS";
         const string GET_CUSTOMER_BY_CUSTOMERID_CONFIG_KEY = "SELECT_CUSTOMER_BY_ID";
@@ -168,13 +168,9 @@ namespace Winkel
             };
         }
 
-        static void AddParameter(DbCommand cmd, string parameterName, DbType dbType, Object? value)
+        public void DeleteCustomer(Customer customer)
         {
-            DbParameter dbParameter = cmd.CreateParameter();
-            dbParameter.ParameterName = parameterName;
-            dbParameter.DbType = dbType;
-            dbParameter.Value = value ?? DBNull.Value;
-            cmd.Parameters.Add(dbParameter);
+            throw new NotImplementedException();
         }
     }
 }
